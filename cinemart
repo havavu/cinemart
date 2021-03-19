@@ -1,0 +1,40 @@
+server {
+	server_name cinemart.duckdns.org;
+	access_log /var/log/nginx/reverse-access.log;
+	error_log /var/log/nginx/reverse-error.log;
+	location / {
+		proxy_pass http://localhost:3000/;
+	}
+
+  listen 443 ssl; # managed by Certbot
+}
+
+server {
+	server_name api.cinemart.duckdns.org;
+	access_log /var/log/nginx/reverse-access.log;
+	error_log /var/log/nginx/reverse-error.log;
+	location / {
+		proxy_pass http://localhost:4000;
+	}
+
+
+  listen 443 ssl; # managed by Certbot
+}
+
+server {
+  if ($host = cinemart.duckdns.org) {
+    return 301 https://$host$request_uri;
+  } # managed by Certbot
+	listen 80;
+	server_name cinemart.duckdns.org;
+  return 404; # managed by Certbot
+}
+
+server {
+  if ($host = api.cinemart.duckdns.org) {
+    return 301 https://$host$request_uri;
+  } # managed by Certbot
+	listen 80;
+	server_name api.cinemart.duckdns.org;
+  return 404; # managed by Certbot
+}
